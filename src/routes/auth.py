@@ -5,7 +5,7 @@ from DB.SQL_scripts.db_scripts import SELECT_USER_BY_EMAIL, INSERT_USER
 
 auth_bp = Blueprint('auth_bp', __name__)
 
-UPLOAD_FOLDER = 'uploaded_images'
+UPLOAD_FOLDER = './src/uploaded_images'
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)

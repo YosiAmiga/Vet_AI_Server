@@ -1,7 +1,7 @@
 import sqlite3
 from DB.SQL_scripts.db_scripts import *
 
-DB_NAME = 'app_data.db'
+DB_NAME = './DB/app_data.db'
 def get_db():
     conn = sqlite3.connect(DB_NAME)
     return conn
