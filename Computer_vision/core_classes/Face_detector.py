@@ -29,9 +29,9 @@ class face_detector:
                 IMAGE_FILES.append(resized_img)
         return IMAGE_FILES
 
-    def save_image(self,image: cv2.imread , filename = r"C:\Users\97252\Desktop\Vet.ai\Vet_AI_Server\Computer_vision\faces_images/face.png") ->None:
+    def save_image(self,image: cv2.imread,user_name: str = "itay" , filename = r"C:\Users\97252\Desktop\Vet.ai\Vet_AI_Server\Computer_vision\faces_images") ->None:
         if self.is_local_save:
-            cv2.imwrite(filename, image)
+            cv2.imwrite(filename + fr"/{user_name}.png", image)
             print("---- Face saved to " + filename + " ----")
         return None
 
