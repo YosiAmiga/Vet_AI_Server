@@ -49,6 +49,8 @@ class face_detector:
               print(self.mp_face_detection.get_key_point(
                   detection, self.mp_face_detection.FaceKeyPoint.NOSE_TIP))
               self.mp_drawing.draw_detection(annotated_image, detection)
+
+
             cv2.imshow('face_detection',annotated_image)
             cv2.waitKey(0)
 
