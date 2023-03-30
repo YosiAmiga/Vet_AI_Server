@@ -6,7 +6,7 @@ import numpy as np
 class image_transformations:
 
     def __init__(self):
-        self.types_of_transformations = ['resize']
+        self.types_of_transformations = ['resize'] # -- help
 
 
     def get_transformations(self,printer = True):
@@ -19,3 +19,5 @@ class image_transformations:
         desired_size = (640, 480)
         resized_img = cv2.resize(image, desired_size)
         return resized_img
+
+
