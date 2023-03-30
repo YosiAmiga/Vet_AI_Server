@@ -70,7 +70,7 @@ class face_detector:
 
                 crop_img = image[rect_start_point[1]:rect_end_point[1], rect_start_point[0]:rect_end_point[0]]
                 cv2.imshow("cropped", crop_img)
-                cv2.imwrite("ROI",crop_img)
+                # cv2.imwrite("ROI",crop_img)
                 cv2.waitKey(0)
 
             cv2.imshow('face_detection',annotated_image)
