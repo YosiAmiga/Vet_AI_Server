@@ -1,12 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask
 from flask_cors import CORS
-import os
-from DB import database
-from DB.SQL_scripts.db_scripts import *
-from src.routes.auth import auth_bp
+from src.routes.user_routes import user_bp
+from src.routes.pet_routes import pet_bp
 
 app = Flask(__name__)
-app.register_blueprint(auth_bp)
+app.register_blueprint(user_bp)
+app.register_blueprint(pet_bp)
 CORS(app)
 
 

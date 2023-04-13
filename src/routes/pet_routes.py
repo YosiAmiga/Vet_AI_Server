@@ -1,60 +1,18 @@
 import base64
+import os
+import glob
 from flask import Blueprint, request, jsonify
 from DB import database
-import os, glob
 from DB.SQL_scripts.db_scripts import *
 from PIL import Image
 
-auth_bp = Blueprint('auth_bp', __name__)
+pet_bp = Blueprint('pet_bp', __name__)
 
 UPLOAD_FOLDER = './src/uploaded_images'
 USERS_PETS_FOLDER = './src/uploaded_images/users_pets'
 
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
 
-@auth_bp.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
-
-    conn = database.get_db()
-    c = conn.cursor()
-    c.execute(SELECT_USER_BY_EMAIL, (email,))
-    user = c.fetchone()
-    conn.close()
-
-    if user:
-        if user[1] == password:
-            return jsonify({'success': True})
-        else:
-            return jsonify({'success': False, 'message': 'Incorrect password.'})
-    else:
-        return jsonify({'success': False, 'message': 'User not found.'})
-
-@auth_bp.route('/register', methods=['POST'])
-def register():
-    data = request.get_json()
-    email = data.get('email')
-    password = data.get('password')
-
-    conn = database.get_db()
-    c = conn.cursor()
-    c.execute(SELECT_USER_BY_EMAIL, (email,))
-    user = c.fetchone()
-
-    if user:
-        conn.close()
-        return jsonify({'success': False, 'message': 'User already exists.'})
-    else:
-        c.execute(INSERT_USER, (email, password))
-        conn.commit()
-        conn.close()
-        return jsonify({'success': True})
-
-
-@auth_bp.route('/upload', methods=['POST'])
+@pet_bp.route('/upload', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
@@ -66,7 +24,7 @@ def upload_file():
             return 'No file found.', 400
 
 
-@auth_bp.route('/get-pet-types', methods=['POST'])
+@pet_bp.route('/get-pet-types', methods=['POST'])
 def get_pet_types():
     conn = database.get_db()
     c = conn.cursor()
@@ -77,7 +35,7 @@ def get_pet_types():
     return types
 
 
-@auth_bp.route('/get-user-pets', methods=['POST'])
+@pet_bp.route('/get-user-pets', methods=['POST'])
 def get_user_pets():
     data = request.get_json()
     email = data.get('userEmail')
@@ -112,7 +70,7 @@ def get_user_pets():
 
     return jsonify(pet_list)
 
-@auth_bp.route('/add-new-pet', methods=['POST'])
+@pet_bp.route('/add-new-pet', methods=['POST'])
 def add_new_pet():
     data = request.form
     owner_email = data.get('owner_email')
