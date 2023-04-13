@@ -13,6 +13,8 @@ SELECT_PETS_BY_OWNER_EMAIL = 'SELECT * FROM pets WHERE owner_mail=?'
 
 SELECT_PET_BY_ID_AND_OWNER_EMAIL = 'SELECT * FROM pets WHERE pet_id=? AND owner_mail=?'
 
+SELECT_ALL_PET_TYPES = 'SELECT type_name FROM pet_types'
+
 #################################### INSERT functions ####################################
 
 INSERT_USER_ALL_DATA = 'INSERT INTO users (email, password, first_name, last_name, country, city) VALUES (?, ?, ?, ?, ?, ?)'
