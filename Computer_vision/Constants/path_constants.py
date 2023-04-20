@@ -1,0 +1,1 @@
+path_to_images = fr"C:\Users\97252\Desktop\Vet_AI_Server\src\uploaded_images\users_pets\itaykarat13@gmail.com"
