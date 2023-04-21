@@ -5,7 +5,7 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import argparse
 import os
-from model import *
+from Computer_vision.core_classes.emotion_recognition_service.model import *
 
 
 def load_trained_model(model_path):
@@ -13,9 +13,9 @@ def load_trained_model(model_path):
     model.load_state_dict(torch.load(model_path, map_location=lambda storage, loc: storage), strict=False)
     return model
 
-def FER_image(img_path,show_image=False):
+def FER_image(img,show_image=False):
 
-    model = load_trained_model('./models/FER_trained_model.pt')
+    model = load_trained_model(r'C:\Users\97252\Desktop\Vet_AI_Server\Computer_vision\core_classes\emotion_recognition_service\models\FER_trained_model.pt')
     
     emotion_dict = {0: 'neutral', 1: 'happiness', 2: 'surprise', 3: 'sadness',
                     4: 'anger', 5: 'disguest', 6: 'fear'}
@@ -23,7 +23,6 @@ def FER_image(img_path,show_image=False):
     val_transform = transforms.Compose([
         transforms.ToTensor()])
 
-    img = cv2.imread(img_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
     resize_frame = cv2.resize(gray, (48, 48))
@@ -48,5 +47,6 @@ def FER_image(img_path,show_image=False):
 
 if __name__ == "__main__":
     image_path = r"C:\Users\97252\Desktop\Vet_AI_Server\Computer_vision\faces_images\face.png"
-    FER_image(img_path=image_path,show_image = False)
+    img = cv2.imread(image_path)
+    FER_image(img=img,show_image = False)
 

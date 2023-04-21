@@ -4,7 +4,7 @@ import os
 from mediapipe.python.solutions.drawing_utils import DrawingSpec
 
 import Computer_vision.Constants.path_constants
-from Computer_vision.core_classes.image_transformations import image_transformations
+from Computer_vision.core_classes.helpers.image_transformations import image_transformations
 
 
 class face_detector:
@@ -26,6 +26,7 @@ class face_detector:
                 image = cv2.imread(os.path.join(directory_path, filename))
                 resized_img = image_transformations.resize_image(image)
                 IMAGE_FILES.append(resized_img)
+                print(f"read a new image")
         return IMAGE_FILES
 
     def save_image(self,image: cv2.imread,user_name: str = "itay" , filename = r"C:\Users\97252\Desktop\Vet.ai\Vet_AI_Server\Computer_vision\faces_images") ->None:
@@ -44,6 +45,7 @@ class face_detector:
 
 
     def detect_face(self,IMAGE_FILES,bbox_drawing_spec: DrawingSpec = DrawingSpec()):
+        face_images = []
         with self.mp_face_detection.FaceDetection(
             model_selection=1, min_detection_confidence=0.5) as face_detection:
           for idx, file in enumerate(IMAGE_FILES):
@@ -77,13 +79,17 @@ class face_detector:
                                     bbox_drawing_spec.color, bbox_drawing_spec.thickness)
 
                 crop_img = image[rect_start_point[1]:rect_end_point[1], rect_start_point[0]:rect_end_point[0]]
-                cv2.imshow("cropped", crop_img)
+                # cv2.imshow("cropped", crop_img)
+                face_images.append(crop_img)
+
                 # cv2.imwrite("ROI",crop_img)
                 self.save_image(image=crop_img)
-                cv2.waitKey(0)
+                # cv2.waitKey(0)
 
-            cv2.imshow('face_detection',annotated_image)
-            cv2.waitKey(0)
+            # cv2.imshow('face_detection',annotated_image)
+            return face_images
+
+            # cv2.waitKey(0)
 
             # cv2.imwrite('/tmp/annotated_image' + str(idx) + '.png', annotated_image)
 
