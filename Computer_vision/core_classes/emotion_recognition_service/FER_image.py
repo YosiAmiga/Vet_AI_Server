@@ -36,7 +36,7 @@ def FER_image(img,show_image=False):
         top_p, top_class = ps.topk(1, dim=1)
         pred = emotion_dict[int(top_class.numpy())]
         # cv2.putText(img, pred, (x, y), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 1)
-        print(pred)
+        print(f"\t*prediction: {pred}")
 
     if show_image:
         plt.imshow(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
