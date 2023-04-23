@@ -1,10 +1,9 @@
 import cv2
-import torch
 import torchvision.transforms as transforms
 from PIL import Image
 import matplotlib.pyplot as plt
-import argparse
-import os
+
+from Computer_vision.Constants.path_constants import path_to_model, path_to_face_image
 from Computer_vision.core_classes.emotion_recognition_service.model import *
 
 
@@ -15,7 +14,7 @@ def load_trained_model(model_path):
 
 def FER_image(img,show_image=False):
 
-    model = load_trained_model(r'C:\Users\97252\Desktop\Vet_AI_Server\Computer_vision\core_classes\emotion_recognition_service\models\FER_trained_model.pt')
+    model = load_trained_model(path_to_model)
     
     emotion_dict = {0: 'neutral', 1: 'happiness', 2: 'surprise', 3: 'sadness',
                     4: 'anger', 5: 'disguest', 6: 'fear'}
@@ -46,7 +45,6 @@ def FER_image(img,show_image=False):
 
 
 if __name__ == "__main__":
-    image_path = r"C:\Users\97252\Desktop\Vet_AI_Server\Computer_vision\faces_images\face.png"
-    img = cv2.imread(image_path)
+    img = cv2.imread(path_to_face_image)
     FER_image(img=img,show_image = False)
 

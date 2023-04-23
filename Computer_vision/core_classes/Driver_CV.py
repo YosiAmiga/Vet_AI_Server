@@ -7,7 +7,7 @@ if __name__ == '__main__':
     face_images,face_landmarks = FD.detect_face(IMAGE_FILES= IMAGE_FILES,return_face_landmarks=True)
     print("\n\n")
     for img_idx,image in enumerate(face_images):
-        print(f"---- started processiong image {img_idx+1} ----")
+        print(f"---- started processiong face image {img_idx+1} ----")
         FER_image(img=image, show_image=True)
 
 

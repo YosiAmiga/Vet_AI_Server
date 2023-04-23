@@ -2,7 +2,7 @@ import cv2
 import mediapipe as mp
 import os
 from mediapipe.python.solutions.drawing_utils import DrawingSpec
-import Computer_vision.Constants.path_constants
+from Computer_vision.Constants.path_constants import *
 from Computer_vision.core_classes.helpers.image_transformations import image_transformations
 
 
@@ -15,7 +15,7 @@ class face_detector:
         self.normtlized_function = mp.solutions.drawing_utils._normalized_to_pixel_coordinates
 
     @staticmethod
-    def read_images_from_directory(directory_path=Computer_vision.Constants.path_constants.path_to_images):
+    def read_images_from_directory(directory_path=path_to_images):
         print(f"--- started reading images from the users directory ----")
         IMAGE_FILES = []
         for img_idx,filename in enumerate(os.listdir(directory_path)):
@@ -29,7 +29,7 @@ class face_detector:
         return IMAGE_FILES
 
     def save_image(self, image: cv2.imread, user_name: str = "itay",
-                   filename=r"C:\Users\97252\Desktop\Vet.ai\Vet_AI_Server\Computer_vision\faces_images") -> None:
+                   filename=path_to_face_images_folder) -> None:
         if self.is_local_save:
             cv2.imwrite(filename + fr"/{user_name}.png", image)
             print("\n\n---- face image saved to " + filename + " ----")

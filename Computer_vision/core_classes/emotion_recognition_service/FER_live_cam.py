@@ -1,10 +1,6 @@
 import cv2
-import torch
 import torchvision.transforms as transforms
 from PIL import Image
-import matplotlib.pyplot as plt
-import argparse
-import os
 from model import *
 
 
