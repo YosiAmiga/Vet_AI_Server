@@ -1,11 +1,13 @@
 #################################### CREATE functions ####################################
 
-CREATE_USERS_TABLE = 'CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, password TEXT, first_name TEXT, last_name TEXT, country TEXT, city TEXT)'
+CREATE_USERS_TABLE = 'CREATE TABLE IF NOT EXISTS users (email TEXT PRIMARY KEY, password TEXT,type TEXT first_name TEXT, last_name TEXT, country TEXT, city TEXT)'
 
 CREATE_PETS_TABLE = 'CREATE TABLE IF NOT EXISTS pets (pet_id INTEGER PRIMARY KEY AUTOINCREMENT, owner_mail TEXT, pet_type TEXT, pet_name TEXT, pet_dob TEXT)'
 
 CREATE_PET_TYPES_TABLE = 'CREATE TABLE IF NOT EXISTS pet_types (id INTEGER PRIMARY KEY,type_name TEXT)'
 #################################### SELECT functions ####################################
+
+SELECT_USER_BY_EMAIL_WITH_TYPE = 'SELECT email, password, type FROM users WHERE email = ?'
 
 SELECT_USER_BY_EMAIL = 'SELECT * FROM users WHERE email=?'
 
@@ -16,6 +18,8 @@ SELECT_PET_BY_ID_AND_OWNER_EMAIL = 'SELECT * FROM pets WHERE pet_id=? AND owner_
 SELECT_ALL_PET_TYPES = 'SELECT type_name FROM pet_types'
 
 #################################### INSERT functions ####################################
+
+INSERT_USER_WITH_TYPE = 'INSERT INTO users (email, password, user_type, first_name, last_name, country, city)) VALUES (?, ?, ?, ?, ?, ?, ?)'
 
 INSERT_USER_ALL_DATA = 'INSERT INTO users (email, password, first_name, last_name, country, city) VALUES (?, ?, ?, ?, ?, ?)'
 

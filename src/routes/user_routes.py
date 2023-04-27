@@ -13,13 +13,13 @@ def login():
 
     conn = database.get_db()
     c = conn.cursor()
-    c.execute(SELECT_USER_BY_EMAIL, (email,))
+    c.execute(SELECT_USER_BY_EMAIL_WITH_TYPE, (email,))
     user = c.fetchone()
     conn.close()
 
     if user:
         if user[1] == password:
-            return jsonify({'success': True})
+            return jsonify({'success': True, 'user_type': user[2]})
         else:
             return jsonify({'success': False, 'message': 'Incorrect password.'})
     else:

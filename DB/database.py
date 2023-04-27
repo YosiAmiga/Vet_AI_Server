@@ -9,10 +9,9 @@ def get_db():
 
 def init_db():
     connection = get_db()
-    # create the database tables
+    # create the database tables if they do not exist
     connection.cursor().execute(CREATE_USERS_TABLE)
     connection.cursor().execute(CREATE_PETS_TABLE)
-    # Create the pet_types table if it doesn't exist
     connection.execute(CREATE_PET_TYPES_TABLE)
 
     # Insert the predefined pet types

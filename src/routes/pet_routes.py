@@ -15,6 +15,7 @@ USERS_PETS_FOLDER = './src/uploaded_images/users_pets'
 @pet_bp.route('/upload', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
+        print('Uploading file request', request.files)
         file = request.files['file']
         if file:
             filename = file.filename
