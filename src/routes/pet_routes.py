@@ -5,7 +5,10 @@ from flask import Blueprint, request, jsonify
 from DB import database
 from DB.SQL_scripts.db_scripts import *
 from PIL import Image
+from Computer_vision.core_classes.emotion_recognition_service.FER_image import FER_image
+from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
 
+FD = face_detector()
 pet_bp = Blueprint('pet_bp', __name__)
 
 UPLOAD_FOLDER = './src/uploaded_images'
@@ -19,8 +22,26 @@ def upload_file():
         file = request.files['file']
         if file:
             filename = file.filename
-            file.save(os.path.join(UPLOAD_FOLDER, filename))
-            return 'File uploaded and saved.', 200
+            user_mail_directory = filename.split('_')
+            new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail_directory[0])
+            if not os.path.exists(new_user_mail_directory):
+                os.makedirs(new_user_mail_directory)
+            file.save(os.path.join(new_user_mail_directory, filename))
+            ##TODO:
+            ## 1. After saving the file,check if its a video or a picture
+            ## 2. Picture: send to FER_image() function, and get the predection of emotion
+            ## 3. Video: split into multiple pictures and send to FER_image() function to do the same
+            ## 4. return the prediction of the uploaded file
+
+            ## IMAGES - WORKING
+            IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
+            face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
+            latest_picture_uploaded = face_images[-1]
+            prediction = FER_image(latest_picture_uploaded)
+            print('Prediction is ', prediction)
+
+            ## VIDEOS
+            return 'Emotion is: ' + prediction, 200
         else:
             return 'No file found.', 400
 
