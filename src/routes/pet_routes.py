@@ -22,7 +22,7 @@ def upload_file():
         file = request.files['file']
         if file:
             filename = file.filename
-            user_mail_directory = filename.split('_')
+            user_mail_directory = filename.split('&')
             new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail_directory[0])
             if not os.path.exists(new_user_mail_directory):
                 os.makedirs(new_user_mail_directory)
