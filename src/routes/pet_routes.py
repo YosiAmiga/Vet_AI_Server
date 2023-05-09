@@ -7,7 +7,6 @@ from DB.SQL_scripts.db_scripts import *
 from PIL import Image
 from Computer_vision.core_classes.emotion_recognition_service.FER_image import FER_image
 from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
-from moviepy.editor import VideoFileClip
 from Computer_vision.Constants import emotions_constants
 import cv2
 
