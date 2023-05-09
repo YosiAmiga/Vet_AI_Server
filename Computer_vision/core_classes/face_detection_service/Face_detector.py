@@ -20,7 +20,7 @@ class face_detector:
         IMAGE_FILES = []
         for img_idx,filename in enumerate(os.listdir(directory_path)):
             # Check if the file is an image file
-            if filename.endswith('.jpg') or filename.endswith('.png'):
+            if filename.endswith('.jpg') or filename.endswith('.png') or filename.endswith('.jpeg'):
                 # Read the image file
                 image = cv2.imread(os.path.join(directory_path, filename))
                 resized_img = image_transformations.resize_image(image)
@@ -28,7 +28,7 @@ class face_detector:
                 print(f"\t*read image number: {img_idx+1}")
         return IMAGE_FILES
 
-    def save_image(self, image: cv2.imread, user_name: str = "itay",
+    def save_image(self, image: cv2.imread, user_name: str = "detected_face",
                    filename=path_to_face_images_folder) -> None:
         if self.is_local_save:
             cv2.imwrite(filename + fr"/{user_name}.png", image)
@@ -80,11 +80,11 @@ class face_detector:
                     self.save_image(image=crop_img)
                     # cv2.waitKey(0)
 
-                # cv2.imshow('face_detection',annotated_image)
-                if return_face_landmarks:
-                    return face_images, face_landmarks
-                else:
-                    return face_images
+            # cv2.imshow('face_detection',annotated_image)
+            if return_face_landmarks:
+                return face_images, face_landmarks
+            else:
+                return face_images
 
                 # cv2.waitKey(0)
 
