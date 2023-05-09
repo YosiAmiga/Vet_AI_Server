@@ -7,6 +7,9 @@ from DB.SQL_scripts.db_scripts import *
 from PIL import Image
 from Computer_vision.core_classes.emotion_recognition_service.FER_image import FER_image
 from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
+from moviepy.editor import VideoFileClip
+from Computer_vision.Constants import emotions_constants
+import cv2
 
 FD = face_detector()
 pet_bp = Blueprint('pet_bp', __name__)
@@ -18,12 +21,18 @@ USERS_PETS_FOLDER = './src/uploaded_images/users_pets'
 @pet_bp.route('/upload', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
-        print('Uploading file request', request.files)
         file = request.files['file']
+
+        pet_id = 0
+        if len(request.form) != 0:
+            pet_id = request.form['pet_id']
+            print('pet is',pet_id)
         if file:
             filename = file.filename
-            user_mail_directory = filename.split('&')
-            new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail_directory[0])
+            user_mail_and_timestamp = filename.split('&')
+            user_mail = user_mail_and_timestamp[0]
+            file_timestamp = user_mail_and_timestamp[1]
+            new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail)
             if not os.path.exists(new_user_mail_directory):
                 os.makedirs(new_user_mail_directory)
             file.save(os.path.join(new_user_mail_directory, filename))
@@ -34,13 +43,11 @@ def upload_file():
             ## 4. return the prediction of the uploaded file
 
             ## IMAGES - WORKING
-            IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
-            face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
-            latest_picture_uploaded = face_images[-1]
-            prediction = FER_image(latest_picture_uploaded)
+            prediction = get_pet_emotion_prediction(new_user_mail_directory)
             print('Prediction is ', prediction)
-
-            ## VIDEOS
+            prediction_id = emotions_constants.get_emotion_id(prediction)
+            database.insert_prediction(user_mail,pet_id,prediction_id)
+            ## VIDEOS - TODO
             return 'Emotion is: ' + prediction, 200
         else:
             return 'No file found.', 400
@@ -92,6 +99,7 @@ def get_user_pets():
 
     return jsonify(pet_list)
 
+
 @pet_bp.route('/add-new-pet', methods=['POST'])
 def add_new_pet():
     data = request.form
@@ -122,4 +130,22 @@ def add_new_pet():
     conn.commit()
     conn.close()
     return jsonify({'success': True})
+
+def get_pet_emotion_prediction(new_user_mail_directory):
+    IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
+    face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
+    latest_picture_uploaded = face_images[len(face_images)-1]
+    cv2.imshow("the pic",latest_picture_uploaded)
+    #cv2.waitKey(0)
+    prediction = FER_image(latest_picture_uploaded)
+    return prediction
+
+
+@pet_bp.route('/get-pet-history', methods=['POST'])
+def get_pet_history_predictions():
+    data = request.get_json()
+    pet_id = data.get('petId')
+    predictions_history = database.get_pet_history_predictions(pet_id)
+    print('predictions_history', predictions_history)
+    return jsonify(predictions_history)
 
