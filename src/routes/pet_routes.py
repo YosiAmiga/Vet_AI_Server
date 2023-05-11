@@ -30,7 +30,7 @@ def upload_file():
             filename = file.filename
             user_mail_and_timestamp = filename.split('&')
             user_mail = user_mail_and_timestamp[0]
-            file_timestamp = user_mail_and_timestamp[1]
+            #file_timestamp = user_mail_and_timestamp[1]
             new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail)
             if not os.path.exists(new_user_mail_directory):
                 os.makedirs(new_user_mail_directory)
@@ -45,7 +45,7 @@ def upload_file():
             prediction = get_pet_emotion_prediction(new_user_mail_directory)
             print('Prediction is ', prediction)
             prediction_id = emotions_constants.get_emotion_id(prediction)
-            database.insert_prediction(user_mail,pet_id,prediction_id)
+            prediction_inserted_good = database.insert_prediction(user_mail,pet_id,prediction_id)
             ## VIDEOS - TODO
             return 'Emotion is: ' + prediction, 200
         else:
@@ -54,12 +54,7 @@ def upload_file():
 
 @pet_bp.route('/get-pet-types', methods=['POST'])
 def get_pet_types():
-    conn = database.get_db()
-    c = conn.cursor()
-    c.execute(SELECT_ALL_PET_TYPES)
-    types = c.fetchall()
-    conn.close()
-
+    types = database.get_pet_types()
     return types
 
 
@@ -67,12 +62,7 @@ def get_pet_types():
 def get_user_pets():
     data = request.get_json()
     email = data.get('userEmail')
-
-    conn = database.get_db()
-    c = conn.cursor()
-    c.execute(SELECT_PETS_BY_OWNER_EMAIL, (email,))
-    pets = c.fetchall()
-    conn.close()
+    pets = database.get_user_pets(email)
 
     pet_list = []
     for pet in pets:
@@ -121,23 +111,9 @@ def add_new_pet():
     pet_photo_filename = f"{pet_name}{os.path.splitext(pet_photo.filename)[1]}"
     image_path = os.path.join(user_folder, pet_photo_filename)
     image.save(image_path)
+    result = database.insert_pet(owner_email, pet_type, pet_name, pet_dob)
 
-    conn = database.get_db()
-    c = conn.cursor()
-
-    c.execute(INSERT_PET, (owner_email, pet_type, pet_name, pet_dob))
-    conn.commit()
-    conn.close()
     return jsonify({'success': True})
-
-def get_pet_emotion_prediction(new_user_mail_directory):
-    IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
-    face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
-    latest_picture_uploaded = face_images[len(face_images)-1]
-    cv2.imshow("the pic",latest_picture_uploaded)
-    #cv2.waitKey(0)
-    prediction = FER_image(latest_picture_uploaded)
-    return prediction
 
 
 @pet_bp.route('/get-pet-history', methods=['POST'])
@@ -147,4 +123,25 @@ def get_pet_history_predictions():
     predictions_history = database.get_pet_history_predictions(pet_id)
     print('predictions_history', predictions_history)
     return jsonify(predictions_history)
+
+
+@pet_bp.route('/get-prediction-distribution', methods=['POST'])
+def get_prediction_distribution():
+    data = request.get_json()
+    pet_id = data.get('petId')
+    prediction_distribution = database.get_prediction_distribution(pet_id)
+    print('prediction_distribution', prediction_distribution)
+    return jsonify(prediction_distribution)
+
+
+
+
+def get_pet_emotion_prediction(new_user_mail_directory):
+    IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
+    face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
+    latest_picture_uploaded = face_images[len(face_images)-1]
+    cv2.imshow("the pic",latest_picture_uploaded)
+    #cv2.waitKey(0)
+    prediction = FER_image(latest_picture_uploaded)
+    return prediction
 

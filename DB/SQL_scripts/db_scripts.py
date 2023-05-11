@@ -43,6 +43,15 @@ SELECT pred_id,
   WHERE pet_id = ? AND predictions_types.pred_type_id = predictions.pred_type_id
   '''
 
+SELECT_PET_PREDICTIONS_HISTORY = '''
+SELECT pred_id,
+       owner_mail,
+       predictions_types.pred_type_name,
+       timestamp
+  FROM predictions,predictions_types
+  WHERE pet_id = ? AND predictions_types.pred_type_id = predictions.pred_type_id
+  '''
+
 #################################### INSERT functions ####################################
 
 INSERT_USER_WITH_TYPE = 'INSERT INTO users (email, password, user_type, first_name, last_name, country, city)) VALUES (?, ?, ?, ?, ?, ?, ?)'
@@ -68,3 +77,39 @@ WHERE NOT EXISTS (SELECT id FROM pet_types WHERE id = 2 AND type_name = 'Dog')
 INSERT_PREDICTION = 'INSERT INTO predictions (owner_mail, pet_id, pred_type_id) VALUES (?, ?, ?)'
 
 INSERT_VET_PREDICTION = 'INSERT INTO predictions_vet (owner_mail,pred_type_id) VALUES (?, ?)'
+
+
+#################################### Analitics functions ####################################
+PREDICTION_DISTRIBUTION = '''
+SELECT predictions_types.pred_type_name,
+       timestamp
+  FROM predictions,predictions_types
+  WHERE pet_id = ? AND predictions_types.pred_type_id = predictions.pred_type_id
+'''
+
+
+queries = {
+    'create_users_table': CREATE_USERS_TABLE,
+    'create_pets_table': CREATE_PETS_TABLE,
+    'create_pet_types_table': CREATE_PET_TYPES_TABLE,
+    'create_predictions_types_table': CREATE_PREDICTIONS_TYPES_TABLE,
+    'create_predictions_table': CREATE_PREDICTIONS_TABLE,
+
+    'select_user_by_email_with_type': SELECT_USER_BY_EMAIL_WITH_TYPE,
+    'select_user_by_email': SELECT_USER_BY_EMAIL,
+    'select_pets_by_owner_email': SELECT_PETS_BY_OWNER_EMAIL,
+    'select_pet_by_id_and_owner_email': SELECT_PET_BY_ID_AND_OWNER_EMAIL,
+    'select_all_pet_types': SELECT_ALL_PET_TYPES,
+    'select_pet_predictions_history': SELECT_PET_PREDICTIONS_HISTORY,
+
+    'insert_user_with_type': INSERT_USER_WITH_TYPE,
+    'insert_user_all_data': INSERT_USER_ALL_DATA,
+    'insert_user': INSERT_USER,
+    'insert_pet': INSERT_PET,
+    'insert_cat_type': INSERT_CAT_TYPE,
+    'insert_dog_type': INSERT_DOG_TYPE,
+    'insert_prediction': INSERT_PREDICTION,
+    'insert_vet_prediction': INSERT_VET_PREDICTION,
+
+    'prediction_distribution': PREDICTION_DISTRIBUTION
+}
