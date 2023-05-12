@@ -9,6 +9,7 @@ from Computer_vision.core_classes.emotion_recognition_service.FER_image import F
 from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
 from Computer_vision.Constants import emotions_constants
 import cv2
+from Analytics.pet_analytics import pet_analytics
 
 FD = face_detector()
 pet_bp = Blueprint('pet_bp', __name__)
@@ -21,7 +22,6 @@ USERS_PETS_FOLDER = './src/uploaded_images/users_pets'
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
-
         pet_id = 0
         if len(request.form) != 0:
             pet_id = request.form['pet_id']
@@ -140,11 +140,31 @@ def get_pet_emotion_prediction(new_user_mail_directory):
     return prediction
 
 
+
 @pet_bp.route('/get-pet-history', methods=['POST'])
 def get_pet_history_predictions():
     data = request.get_json()
     pet_id = data.get('petId')
-    predictions_history = database.get_pet_history_predictions(pet_id)
-    print('predictions_history', predictions_history)
+
+    # ----  PREDICTIONS DF ----
+    predictions_history,predictions_dataFrame = database.get_pet_history_predictions(pet_id)
+    print('predictions_dataFrame', predictions_dataFrame)
+
+    # ----  PREDICTIONS DF BY OWNER ----
+    owner_predictions_dist_df = pet_analytics.get_predictions_dist(dataFrame = predictions_dataFrame,owner_email="itaykarat13@gmail.com")
+    print(f"Predictions for user by pred type:\n{owner_predictions_dist_df} ")
+
+    # ----  PETS DF ----
+    print(f"All the pets table as df:\n")
+    print(database.get_pets_data())
+
+    print("\n\n\n")
+
+    # ----  USERS DF ----
+    print(f"All the users table as df:\n")
+    users_dataFrame = database.get_users_data()
+    print(users_dataFrame)
+
     return jsonify(predictions_history)
+
 

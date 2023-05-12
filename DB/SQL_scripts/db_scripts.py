@@ -34,6 +34,10 @@ SELECT_PET_BY_ID_AND_OWNER_EMAIL = 'SELECT * FROM pets WHERE pet_id=? AND owner_
 
 SELECT_ALL_PET_TYPES = 'SELECT type_name FROM pet_types'
 
+SELECT_ALL_PET_TABLE = "SELECT * FROM pets"
+
+SELECT_ALL_USERS_TABLE = "SELECT * FROM users"
+
 SELECT_PET_PREDICTIONS_HISTORY = '''
 SELECT pred_id,
        owner_mail,
