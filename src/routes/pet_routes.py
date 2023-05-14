@@ -24,14 +24,14 @@ def upload_file():
             print('pet is',pet_id)
 
         # VIDEOS
-        if file.mimetype == 'video/webm':
+        if file.mimetype.startswith('video/'):
             prediction = predict_video(file, pet_id)
-            return 'Emotion is: ' + prediction, 200
+            return prediction, 200
 
         # IMAGES
         if file.mimetype == 'image/jpeg':
             prediction = predict_image(file, pet_id)
-            return 'Emotion is: ' + prediction, 200
+            return prediction, 200
 
         return 'Error in file uploading process.', 400
 
