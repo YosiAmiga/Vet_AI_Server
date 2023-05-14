@@ -1,5 +1,8 @@
+from Computer_vision.Constants import emotions_constants
 from Computer_vision.core_classes.emotion_recognition_service.FER_image import FER_image
 from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
+from Computer_vision.core_classes.video_filtering_service import VideoProcessor
+from DB import database
 from src.services.uploading_file_service import *
 FD = face_detector()
 
