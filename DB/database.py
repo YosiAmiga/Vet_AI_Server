@@ -1,6 +1,9 @@
 import sqlite3
 from DB.SQL_scripts.db_scripts import *
-
+import DB.SQL_scripts.queries.select_queries as select_queries
+import DB.SQL_scripts.queries.create_queries as create_queries
+import DB.SQL_scripts.queries.insert_queries as insert_queries
+import DB.SQL_scripts.queries.analytics_queries as analytics_queries
 DB_NAME = './DB/app_data.db'
 
 
@@ -12,15 +15,15 @@ def get_db():
 def init_db():
     connection = get_db()
     # create the database tables if they do not exist
-    connection.cursor().execute(CREATE_USERS_TABLE)
-    connection.cursor().execute(CREATE_PETS_TABLE)
-    connection.execute(CREATE_PET_TYPES_TABLE)
-    connection.execute(CREATE_PREDICTIONS_TYPES_TABLE)
-    connection.execute(CREATE_PREDICTIONS_TABLE)
+    connection.cursor().execute(create_queries.CREATE_USERS_TABLE)
+    connection.cursor().execute(create_queries.CREATE_PETS_TABLE)
+    connection.execute(create_queries.CREATE_PET_TYPES_TABLE)
+    connection.execute(create_queries.CREATE_PREDICTIONS_TYPES_TABLE)
+    connection.execute(create_queries.CREATE_PREDICTIONS_TABLE)
 
     # Insert the predefined pet types
-    connection.execute(INSERT_CAT_TYPE)
-    connection.execute(INSERT_DOG_TYPE)
+    connection.execute(insert_queries.INSERT_CAT_TYPE)
+    connection.execute(insert_queries.INSERT_DOG_TYPE)
 
     connection.commit()
     connection.close()
