@@ -12,12 +12,14 @@ def load_trained_model(model_path):
     model.load_state_dict(torch.load(model_path, map_location=lambda storage, loc: storage), strict=False)
     return model
 
-def FER_image(img,show_image=False):
 
+def FER_image(img,show_image=False):
+    # cv2.imshow("the pic",img)
+    # cv2.waitKey(0)
     model = load_trained_model(path_to_model)
     
     emotion_dict = {0: 'neutral', 1: 'happiness', 2: 'surprise', 3: 'sadness',
-                    4: 'anger', 5: 'disguest', 6: 'fear'}
+                    4: 'anger', 5: 'disgust', 6: 'fear'}
 
     val_transform = transforms.Compose([
         transforms.ToTensor()])
@@ -47,6 +49,6 @@ def FER_image(img,show_image=False):
 
 
 if __name__ == "__main__":
-    img = cv2.imread(path_to_face_image)
+    img = cv2.imread(r"C:\Users\user\PycharmProjects\Pet_AI_Server\src\uploaded_images\y_171095@walla.co.il\y_171095@walla.co.il&5-9-2023- 11-33-00 AM.jpeg")
     FER_image(img=img,show_image = False)
 

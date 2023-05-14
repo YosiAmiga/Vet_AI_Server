@@ -11,11 +11,7 @@ def login():
     email = data.get('email')
     password = data.get('password')
 
-    conn = database.get_db()
-    c = conn.cursor()
-    c.execute(SELECT_USER_BY_EMAIL_WITH_TYPE, (email,))
-    user = c.fetchone()
-    conn.close()
+    user = database.get_login(email)
 
     if user:
         if user[1] == password:
@@ -32,16 +28,11 @@ def register():
     email = data.get('email')
     password = data.get('password')
 
-    conn = database.get_db()
-    c = conn.cursor()
-    c.execute(SELECT_USER_BY_EMAIL, (email,))
-    user = c.fetchone()
+    user = database.get_user(email)
 
     if user:
-        conn.close()
         return jsonify({'success': False, 'message': 'User already exists.'})
     else:
-        c.execute(INSERT_USER, (email, password))
-        conn.commit()
-        conn.close()
+        result = database.insert_user(email, password)
+
         return jsonify({'success': True})
