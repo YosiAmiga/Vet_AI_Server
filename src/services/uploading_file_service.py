@@ -1,6 +1,3 @@
-from DB import database
-from Computer_vision.Constants import emotions_constants
-from Computer_vision.core_classes.video_filtering_service import VideoProcessor
 import os
 
 UPLOAD_FOLDER = './src/uploaded_images'

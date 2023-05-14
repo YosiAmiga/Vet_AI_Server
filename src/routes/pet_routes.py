@@ -3,13 +3,6 @@ import glob
 from flask import Blueprint, request, jsonify
 from DB import database
 from PIL import Image
-from Computer_vision.core_classes.emotion_recognition_service.FER_image import FER_image
-from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
-from Computer_vision.Constants import emotions_constants
-from Computer_vision.core_classes.video_filtering_service import VideoProcessor
-import cv2
-import os
-from src.services.uploading_file_service import *
 from src.services.prediction_service import *
 
 
@@ -19,52 +12,6 @@ pet_bp = Blueprint('pet_bp', __name__)
 UPLOAD_FOLDER = './src/uploaded_images'
 USERS_PETS_FOLDER = './src/uploaded_images/users_pets'
 UPLOAD_FOLDER_VIDEOS = './src/uploaded_videos/'
-
-
-# def get_latest_file_in_directory(directory_path):
-#     files = os.listdir(directory_path)
-#     files.sort(key=lambda x: os.path.getmtime(os.path.join(directory_path, x)))
-#     latest_file = files[-1]
-#     return os.path.join(directory_path, latest_file)
-#
-#
-# def predict_video(file,pet_id):
-#     save_file_in_directory(file, UPLOAD_FOLDER_VIDEOS)
-#     filename = file.filename
-#     user_mail_and_timestamp = filename.split('&')
-#     user_mail = user_mail_and_timestamp[0]
-#     # file_timestamp = user_mail_and_timestamp[1]
-#     new_user_mail_directory = os.path.join(UPLOAD_FOLDER_VIDEOS, user_mail)
-#     latest_video_path = get_latest_file_in_directory(new_user_mail_directory)
-#     prediction = VideoProcessor.process_video(latest_video_path)
-#     prediction_id = emotions_constants.get_emotion_id(prediction)
-#     prediction_inserted_good = database.insert_prediction(user_mail, pet_id, prediction_id)
-#
-#     return prediction
-#
-#
-# def predict_image(file,pet_id):
-#     save_file_in_directory(file, UPLOAD_FOLDER)
-#     filename = file.filename
-#     user_mail_and_timestamp = filename.split('&')
-#     user_mail = user_mail_and_timestamp[0]
-#     # file_timestamp = user_mail_and_timestamp[1]
-#     new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail)
-#     prediction = get_pet_emotion_prediction(new_user_mail_directory)
-#     prediction_id = emotions_constants.get_emotion_id(prediction)
-#     prediction_inserted_good = database.insert_prediction(user_mail, pet_id, prediction_id)
-#     return prediction
-#
-#
-# def save_file_in_directory(file, directory):
-#     filename = file.filename
-#     user_mail_and_timestamp = filename.split('&')
-#     user_mail = user_mail_and_timestamp[0]
-#     # file_timestamp = user_mail_and_timestamp[1]
-#     new_user_mail_directory = os.path.join(directory, user_mail)
-#     if not os.path.exists(new_user_mail_directory):
-#         os.makedirs(new_user_mail_directory)
-#     file.save(os.path.join(new_user_mail_directory, filename))
 
 
 @pet_bp.route('/upload', methods=['POST'])
@@ -170,13 +117,4 @@ def get_prediction_distribution():
     print('prediction_distribution', prediction_distribution)
     return jsonify(prediction_distribution)
 
-
-# def get_pet_emotion_prediction(new_user_mail_directory):
-#     IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
-#     face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
-#     latest_picture_uploaded = face_images[len(face_images)-1]
-#     # cv2.imshow("the pic",latest_picture_uploaded)
-#     # cv2.waitKey(0)
-#     prediction = FER_image(latest_picture_uploaded)
-#     return prediction
 
