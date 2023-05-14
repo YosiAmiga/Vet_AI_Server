@@ -1,5 +1,8 @@
 import cv2
 from Computer_vision.core_classes.emotion_recognition_service.FER_image import FER_image
+from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
+
+FD = face_detector()
 
 
 class VideoProcessor:
@@ -27,13 +30,16 @@ class VideoProcessor:
         for frame in frames:
             # Perform face detection on the frame
             # If a face is detected, perform emotion recognition
-            # For simplicity, let's assume that the face detection is always successful
-            emotion = FER_image(frame)
+            face_detection = FD.detect_face(frame)
+            if face_detection:
 
-            # Increment the count for the detected emotion
-            if emotion not in emotion_count:
-                emotion_count[emotion] = 0
-            emotion_count[emotion] += 1
+                # For simplicity, let's assume that the face detection is always successful
+                emotion = FER_image(face_detection)
+
+                # Increment the count for the detected emotion
+                if emotion not in emotion_count:
+                    emotion_count[emotion] = 0
+                emotion_count[emotion] += 1
 
         # Find the emotion with the highest count
         most_common_emotion = max(emotion_count, key=emotion_count.get)
