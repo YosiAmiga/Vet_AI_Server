@@ -1,55 +1,92 @@
 import base64
-import os
 import glob
 from flask import Blueprint, request, jsonify
 from DB import database
-from DB.SQL_scripts.db_scripts import *
 from PIL import Image
 from Computer_vision.core_classes.emotion_recognition_service.FER_image import FER_image
 from Computer_vision.core_classes.face_detection_service.Face_detector import face_detector
 from Computer_vision.Constants import emotions_constants
+from Computer_vision.core_classes.video_filtering_service import VideoProcessor
 import cv2
+import os
+from src.services.uploading_file_service import *
+from src.services.prediction_service import *
+
 
 FD = face_detector()
 pet_bp = Blueprint('pet_bp', __name__)
 
 UPLOAD_FOLDER = './src/uploaded_images'
 USERS_PETS_FOLDER = './src/uploaded_images/users_pets'
+UPLOAD_FOLDER_VIDEOS = './src/uploaded_videos/'
+
+
+# def get_latest_file_in_directory(directory_path):
+#     files = os.listdir(directory_path)
+#     files.sort(key=lambda x: os.path.getmtime(os.path.join(directory_path, x)))
+#     latest_file = files[-1]
+#     return os.path.join(directory_path, latest_file)
+#
+#
+# def predict_video(file,pet_id):
+#     save_file_in_directory(file, UPLOAD_FOLDER_VIDEOS)
+#     filename = file.filename
+#     user_mail_and_timestamp = filename.split('&')
+#     user_mail = user_mail_and_timestamp[0]
+#     # file_timestamp = user_mail_and_timestamp[1]
+#     new_user_mail_directory = os.path.join(UPLOAD_FOLDER_VIDEOS, user_mail)
+#     latest_video_path = get_latest_file_in_directory(new_user_mail_directory)
+#     prediction = VideoProcessor.process_video(latest_video_path)
+#     prediction_id = emotions_constants.get_emotion_id(prediction)
+#     prediction_inserted_good = database.insert_prediction(user_mail, pet_id, prediction_id)
+#
+#     return prediction
+#
+#
+# def predict_image(file,pet_id):
+#     save_file_in_directory(file, UPLOAD_FOLDER)
+#     filename = file.filename
+#     user_mail_and_timestamp = filename.split('&')
+#     user_mail = user_mail_and_timestamp[0]
+#     # file_timestamp = user_mail_and_timestamp[1]
+#     new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail)
+#     prediction = get_pet_emotion_prediction(new_user_mail_directory)
+#     prediction_id = emotions_constants.get_emotion_id(prediction)
+#     prediction_inserted_good = database.insert_prediction(user_mail, pet_id, prediction_id)
+#     return prediction
+#
+#
+# def save_file_in_directory(file, directory):
+#     filename = file.filename
+#     user_mail_and_timestamp = filename.split('&')
+#     user_mail = user_mail_and_timestamp[0]
+#     # file_timestamp = user_mail_and_timestamp[1]
+#     new_user_mail_directory = os.path.join(directory, user_mail)
+#     if not os.path.exists(new_user_mail_directory):
+#         os.makedirs(new_user_mail_directory)
+#     file.save(os.path.join(new_user_mail_directory, filename))
 
 
 @pet_bp.route('/upload', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['file']
-
         pet_id = 0
         if len(request.form) != 0:
             pet_id = request.form['pet_id']
             print('pet is',pet_id)
-        if file:
-            filename = file.filename
-            user_mail_and_timestamp = filename.split('&')
-            user_mail = user_mail_and_timestamp[0]
-            #file_timestamp = user_mail_and_timestamp[1]
-            new_user_mail_directory = os.path.join(UPLOAD_FOLDER, user_mail)
-            if not os.path.exists(new_user_mail_directory):
-                os.makedirs(new_user_mail_directory)
-            file.save(os.path.join(new_user_mail_directory, filename))
-            ##TODO:
-            ## 1. After saving the file,check if its a video or a picture
-            ## 2. Picture: send to FER_image() function, and get the predection of emotion
-            ## 3. Video: split into multiple pictures and send to FER_image() function to do the same
-            ## 4. return the prediction of the uploaded file
 
-            ## IMAGES - WORKING
-            prediction = get_pet_emotion_prediction(new_user_mail_directory)
-            print('Prediction is ', prediction)
-            prediction_id = emotions_constants.get_emotion_id(prediction)
-            prediction_inserted_good = database.insert_prediction(user_mail,pet_id,prediction_id)
-            ## VIDEOS - TODO
+        # VIDEOS
+        if file.mimetype == 'video/webm':
+            prediction = predict_video(file, pet_id)
             return 'Emotion is: ' + prediction, 200
-        else:
-            return 'No file found.', 400
+
+        # IMAGES
+        if file.mimetype == 'image/jpeg':
+            prediction = predict_image(file, pet_id)
+            return 'Emotion is: ' + prediction, 200
+
+        return 'Error in file uploading process.', 400
 
 
 @pet_bp.route('/get-pet-types', methods=['POST'])
@@ -134,14 +171,12 @@ def get_prediction_distribution():
     return jsonify(prediction_distribution)
 
 
-
-
-def get_pet_emotion_prediction(new_user_mail_directory):
-    IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
-    face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
-    latest_picture_uploaded = face_images[len(face_images)-1]
-    cv2.imshow("the pic",latest_picture_uploaded)
-    #cv2.waitKey(0)
-    prediction = FER_image(latest_picture_uploaded)
-    return prediction
+# def get_pet_emotion_prediction(new_user_mail_directory):
+#     IMAGE_FILES = face_detector.read_images_from_directory(new_user_mail_directory)
+#     face_images, face_landmarks = FD.detect_face(IMAGE_FILES=IMAGE_FILES, return_face_landmarks=True)
+#     latest_picture_uploaded = face_images[len(face_images)-1]
+#     # cv2.imshow("the pic",latest_picture_uploaded)
+#     # cv2.waitKey(0)
+#     prediction = FER_image(latest_picture_uploaded)
+#     return prediction
 

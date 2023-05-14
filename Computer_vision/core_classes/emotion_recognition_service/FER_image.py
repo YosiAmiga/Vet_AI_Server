@@ -14,7 +14,8 @@ def load_trained_model(model_path):
 
 
 def FER_image(img,show_image=False):
-
+    # cv2.imshow("the pic",img)
+    # cv2.waitKey(0)
     model = load_trained_model(path_to_model)
     
     emotion_dict = {0: 'neutral', 1: 'happiness', 2: 'surprise', 3: 'sadness',
