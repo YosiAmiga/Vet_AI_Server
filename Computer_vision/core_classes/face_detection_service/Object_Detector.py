@@ -47,8 +47,8 @@ class ObjectDetector:
                     class_name = self.label_map[class_id]
                     print(f'Image {image_file} Detected as: {class_name} with confidence {output_dict[0]["scores"][i]}')
 
-            plt.imshow(image_tensor.permute(1, 2, 0))
-            plt.show()
+            #plt.imshow(image_tensor.permute(1, 2, 0))
+            #plt.show()
 
     def object_detection_by_image_file(self, img):
         # Convert the image to PIL format
@@ -77,8 +77,8 @@ class ObjectDetector:
         #         print(f'Image Detected as: {class_name} with confidence {output_dict[0]["scores"][i]}')
 
         # Display the image
-        plt.imshow(image_tensor.permute(1, 2, 0))
-        plt.show()
+        #plt.imshow(image_tensor.permute(1, 2, 0))
+        #plt.show()
         return max_class
     def object_detection_by_image(self, img):
         # Convert the image to PIL format
@@ -107,8 +107,8 @@ class ObjectDetector:
         #         print(f'Image Detected as: {class_name} with confidence {output_dict[0]["scores"][i]}')
 
         # Display the image
-        plt.imshow(image_tensor.permute(1, 2, 0))
-        plt.show()
+        #plt.imshow(image_tensor.permute(1, 2, 0))
+        #plt.show()
         return max_class
 
 if __name__ == '__main__':
