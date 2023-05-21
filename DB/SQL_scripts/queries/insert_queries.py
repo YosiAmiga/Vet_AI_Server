@@ -20,6 +20,19 @@ SELECT 2, 'Dog'
 WHERE NOT EXISTS (SELECT id FROM pet_types WHERE id = 2 AND type_name = 'Dog')
 '''
 
+INSERT_PERSON_TYPE = '''
+INSERT INTO pet_types (id, type_name)
+SELECT 3, 'person'
+WHERE NOT EXISTS (SELECT id FROM pet_types WHERE id = 3 AND type_name = 'person')
+'''
+
 INSERT_PREDICTION = 'INSERT INTO predictions (owner_mail, pet_id, pred_type_id) VALUES (?, ?, ?)'
 
 INSERT_VET_PREDICTION = 'INSERT INTO predictions_vet (owner_mail,pred_type_id) VALUES (?, ?)'
+
+## NEED TO CHANGE THE 2nd value to add it to table
+INSERT_PET_PREDICTION_TYPE = '''
+INSERT INTO pet_prediction_type (pet_type_id, pred_type_id)
+VALUES (2, 1);
+
+'''

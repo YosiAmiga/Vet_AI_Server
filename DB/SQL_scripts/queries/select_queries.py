@@ -27,3 +27,11 @@ SELECT pred_id,
   FROM predictions,predictions_types
   WHERE pet_id = ? AND predictions_types.pred_type_id = predictions.pred_type_id
   '''
+
+SELECT_PET_PREDICTION_TYPES = '''
+SELECT pet_types.type_name, predictions_types.pred_type_name
+FROM pet_prediction_type
+JOIN pet_types ON pet_types.id = pet_prediction_type.pet_type_id
+JOIN predictions_types ON predictions_types.pred_type_id = pet_prediction_type.pred_type_id;
+
+'''
