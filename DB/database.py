@@ -78,6 +78,32 @@ def get_prediction_distribution(pet_id):
     return execute_query('prediction_distribution', pet_id)
 
 
+def get_pet_prediction_types():
+    return execute_query('select_pet_prediction_types')
+
+
+def get_predictions_by_users():
+    return execute_query('predictions_by_users')
+
+
+def get_user_pet_count():
+    return execute_query('user_pet_count')
+
+
+def get_pet_types_count():
+    return execute_query('pet_types_count')
+
+
+def get_count_daily_predictions():
+    return execute_query('count_daily_predictions')
+
+
+def get_all_pets():
+    return execute_query('select_all_pets')
+
+def get_all_predictions():
+    return execute_query('select_all_predictions')
+
 def execute_query_single_value(query_name, *params):
     connection = get_db()
     cursor = connection.cursor()

@@ -80,6 +80,7 @@ class ObjectDetector:
         #plt.imshow(image_tensor.permute(1, 2, 0))
         #plt.show()
         return max_class
+
     def object_detection_by_image(self, img):
         # Convert the image to PIL format
         pil_image = Image.fromarray(img).convert("RGB")

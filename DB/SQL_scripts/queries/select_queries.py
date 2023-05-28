@@ -35,3 +35,23 @@ JOIN pet_types ON pet_types.id = pet_prediction_type.pet_type_id
 JOIN predictions_types ON predictions_types.pred_type_id = pet_prediction_type.pred_type_id;
 
 '''
+
+
+SELECT_ALL_PETS = '''
+SELECT pet_id,
+       owner_mail,
+       pet_type,
+       pet_name,
+       pet_dob
+  FROM pets;
+
+'''
+
+SELECT_ALL_PREDICTIONS = '''
+SELECT pred_id,
+       owner_mail,
+       pet_id,
+       pred_type_id,
+       timestamp
+  FROM predictions;
+'''
