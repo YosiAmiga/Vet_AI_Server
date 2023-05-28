@@ -22,3 +22,13 @@ CREATE TABLE IF NOT EXISTS predictions (
   timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 '''
+
+CREATE_PET_PREDICTION_TYPES = '''
+CREATE TABLE IF NOT EXISTS pet_prediction_type (
+    id INTEGER PRIMARY KEY,
+    pet_type_id INTEGER REFERENCES pet_types(id),
+    pred_type_id INTEGER REFERENCES predictions_types(pred_type_id),
+    UNIQUE (pet_type_id, pred_type_id)
+);
+
+'''

@@ -5,7 +5,7 @@ from DB import database
 from PIL import Image
 from src.services.prediction_service import *
 
-
+object_detector = ObjectDetector()
 FD = face_detector()
 pet_bp = Blueprint('pet_bp', __name__)
 
@@ -40,6 +40,13 @@ def upload_file():
 def get_pet_types():
     types = database.get_pet_types()
     return types
+
+
+@pet_bp.route('/get-pet-prediction-types', methods=['POST'])
+def get_pet_prediction_types():
+    prediction_types = database.get_pet_prediction_types()
+    print('pred', prediction_types)
+    return prediction_types
 
 
 @pet_bp.route('/get-user-pets', methods=['POST'])
@@ -81,23 +88,29 @@ def add_new_pet():
     pet_name = data.get('pet_name')
     pet_dob = data.get('pet_dob')
     pet_photo = request.files['pet_photo']
+    class_name = object_detector.object_detection_by_image_file(pet_photo)
 
-    # Create user's folder if it doesn't exist
-    user_folder = os.path.join(USERS_PETS_FOLDER, owner_email)
-    if not os.path.exists(user_folder):
-        os.makedirs(user_folder)
+    class_name_lower = class_name.lower()
+    pet_type_lower = pet_type.lower()
+    if pet_type_lower == class_name_lower:
+        # Create user's folder if it doesn't exist
+        user_folder = os.path.join(USERS_PETS_FOLDER, owner_email)
+        if not os.path.exists(user_folder):
+            os.makedirs(user_folder)
 
-    # Resize the image to 150x150 pixels
-    image = Image.open(pet_photo.stream)
-    image = image.resize((150, 150), Image.ANTIALIAS)
+        # Resize the image to 150x150 pixels
+        image = Image.open(pet_photo.stream)
+        image = image.resize((150, 150), Image.ANTIALIAS)
 
-    # Save the resized photo in the designated folder
-    pet_photo_filename = f"{pet_name}{os.path.splitext(pet_photo.filename)[1]}"
-    image_path = os.path.join(user_folder, pet_photo_filename)
-    image.save(image_path)
-    result = database.insert_pet(owner_email, pet_type, pet_name, pet_dob)
+        # Save the resized photo in the designated folder
+        pet_photo_filename = f"{pet_name}{os.path.splitext(pet_photo.filename)[1]}"
+        image_path = os.path.join(user_folder, pet_photo_filename)
+        image.save(image_path)
+        result = database.insert_pet(owner_email, pet_type, pet_name, pet_dob)
 
-    return jsonify({'success': True})
+        return jsonify({'success': True})
+    else:
+        return jsonify({'Image do not match class detection ': False})
 
 
 @pet_bp.route('/get-pet-history', methods=['POST'])
