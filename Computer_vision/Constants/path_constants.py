@@ -1,0 +1,5 @@
+path_to_images = './src/uploaded_images/users_pets/y_171095@walla.co.il'
+path_to_model = './Computer_vision/core_classes/emotion_recognition_service/models/FER_trained_model.pt'
+path_to_face_image = './Computer_vision/faces_images/face.png'
+path_to_face_images_folder = './Computer_vision/faces_images'
+path_to_video_blob = './src/uploaded_images/blob/blob'
